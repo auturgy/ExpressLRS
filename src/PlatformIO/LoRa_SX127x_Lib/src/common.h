@@ -7,6 +7,7 @@
 uint8_t TxBaseMac[6] = {48, 174, 164, 200, 101, 28};
 
 uint8_t DeviceAddr = TxBaseMac[3] & 0b111111;
+uint8_t CRCCaesarCipher = TxBaseMac[4];
 
 typedef enum
 {

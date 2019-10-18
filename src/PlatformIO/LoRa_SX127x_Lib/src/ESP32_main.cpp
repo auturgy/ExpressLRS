@@ -66,7 +66,7 @@ bool WaitRXresponse = false;
 
 void ICACHE_RAM_ATTR ProcessTLMpacket()
 {
-  uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6);
+  uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
   uint8_t inCRC = Radio.RXdataBuffer[6];
   uint8_t type = Radio.RXdataBuffer[0] & 0b11;
   uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
@@ -199,7 +199,7 @@ void ICACHE_RAM_ATTR SendRCdataToRF_NoTLM()
   }
 
   ///// Next, Calculate the CRC and put it into the buffer /////
-  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6);
+  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
   Radio.TXdataBuffer[6] = crc;
   ////////////////////////////////////////////////////////////
   Radio.TXnb(Radio.TXdataBuffer, 7);
@@ -228,7 +228,7 @@ void BeginFastSync()
   GenerateSyncPacketData();
   Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
   Radio.TXdataBuffer[4] = 1;
-  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6);
+  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
   Radio.TXdataBuffer[6] = crc;
 
   while (1)
@@ -243,7 +243,7 @@ void BeginFastSync()
     }
   }
 
-  uint8_t calculatedCRC = CalcCRC(RXdata, 6);
+  uint8_t calculatedCRC = CalcCRC(RXdata, 6) + CRCCaesarCipher;
   uint8_t inCRC = RXdata[6];
   uint8_t type = RXdata[0] & 0b11;
   uint8_t packetAddr = (RXdata[0] & 0b11111100) >> 2;
@@ -262,7 +262,7 @@ void BeginFastSync()
 
           Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
           Radio.TXdataBuffer[4] = 3;
-          uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6);
+          uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
           Radio.TXdataBuffer[6] = crc;
           Radio.TX((uint8_t *)Radio.TXdataBuffer, 7);
           SetRFLinkRate(ExpressLRS_prevAirRate);

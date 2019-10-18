@@ -125,7 +125,7 @@ void ICACHE_RAM_ATTR HandleSendTelemetryResponse()
     Radio.TXdataBuffer[4] = crsf.LinkStatistics.uplink_SNR;
     Radio.TXdataBuffer[5] = crsf.LinkStatistics.uplink_Link_quality;
 
-    uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6);
+    uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
     Radio.TXdataBuffer[6] = crc;
     //delayMicroseconds(5000);
     Radio.TXnb(Radio.TXdataBuffer, 7);
@@ -186,7 +186,7 @@ void ICACHE_RAM_ATTR SendCRSFframe()
 void ICACHE_RAM_ATTR ProcessRFPacket()
 {
     //Serial.println(".");
-    uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6);
+    uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
     uint8_t inCRC = Radio.RXdataBuffer[6];
     uint8_t type = Radio.RXdataBuffer[0] & 0b11;
     uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
@@ -480,7 +480,7 @@ void loop()
     //             scanIndex++;
     //         }
 
-    //         uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6);
+    //         uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
     //         uint8_t inCRC = Radio.RXdataBuffer[6];
     //         uint8_t type = Radio.RXdataBuffer[0] & 0b11;
     //         uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
@@ -507,14 +507,14 @@ void loop()
     //                         Serial.println("Sending Resp. stage 2");
     //                         GenerateSyncPacketData();
     //                         Radio.TXdataBuffer[4] = 2;
-    //                         Radio.TXdataBuffer[6] = CalcCRC(Radio.TXdataBuffer, 6);
+    //                         Radio.TXdataBuffer[6] = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
     //                         Radio.TX((uint8_t *)Radio.TXdataBuffer, 7);
     //                         InitHarwareTimer();
 
     //                         if (Radio.RXsingle((uint8_t *)Radio.RXdataBuffer, 7, 2 * (RF_RATE_50HZ.interval / 1000)) == !ERR_RX_TIMEOUT)
     //                         {
     //                             Serial.println("Got Resp. Stage 3");
-    //                             uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6);
+    //                             uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
     //                             uint8_t inCRC = Radio.RXdataBuffer[6];
     //                             uint8_t type = Radio.RXdataBuffer[0] & 0b11;
     //                             uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
@@ -641,7 +641,7 @@ void loop()
     //         uint8_t datain[7];
     //         Radio.RXsingle(datain, 7);
 
-    //         uint8_t calculatedCRC = CalcCRC(datain, 6);
+    //         uint8_t calculatedCRC = CalcCRC(datain, 6) + CRCCaesarCipher;
     //         uint8_t inCRC = datain[6];
     //         uint8_t type = datain[0] & 0b11;
     //         uint8_t packetAddr = (datain[0] & 0b11111100) >> 2;
