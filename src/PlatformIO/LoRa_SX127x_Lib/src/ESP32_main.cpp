@@ -1,9 +1,9 @@
 #include <Arduino.h>
+#include "utils.h"
 #include "common.h"
 #include "LoRaRadioLib.h"
 #include "CRSF.h"
 #include "FHSS.h"
-#include "utils.h"
 
 //#define RFmodule_Size FULL
 
@@ -332,6 +332,8 @@ void setup()
   Serial.print(baseMac[5]);
   Serial.println("};");
   Serial.println("");
+
+  FHSSrandomiseFHSSsequence();
 
 #ifdef Regulatory_Domain_AU_915
   Serial.println("915MHz Mode");

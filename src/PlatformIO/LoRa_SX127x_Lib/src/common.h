@@ -2,7 +2,7 @@
 
 // define frequnecy band of operation
 #define Regulatory_Domain_AU_915
-#define Regulatory_Domain_AU_433 
+// #define Regulatory_Domain_AU_433
 
 uint8_t TxBaseMac[6] = {48, 174, 164, 200, 101, 28};
 
