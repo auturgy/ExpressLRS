@@ -6,7 +6,6 @@
 #include "utils.h"
 
 //#define RFmodule_Size FULL
-#define Regulatory_Domain_AU_433 // define frequnecy band of operation
 
 void SetRFLinkRate(expresslrs_mod_settings_s mode);
 void BeginFastSync();
@@ -318,20 +317,17 @@ void setup()
   Serial.println("ExpressLRS TX Module Booted...");
 
 #ifdef Regulatory_Domain_AU_915
-  Serial.println("Setting 915MHz Mode");
-  FHSSsetFreqMode(915);
+  Serial.println("915MHz Mode");
   Radio.RFmodule = RFMOD_SX1276;        //define radio module here
   Radio.SetFrequency(GetInitialFreq()); //set frequency first or an error will occur!!!
-
   // Radio.SetOutputPower(0b0000); // 15dbm = 32mW
   // Radio.SetOutputPower(0b0001); // 18dbm = 40mW
   Radio.SetOutputPower(0b0000); // 20dbm = 100mW
-                                //Radio.SetOutputPower(0b1000); // 23dbm = 200mW
-                                // Radio.SetOutputPower(0b1100); // 27dbm = 500mW
-                                // Radio.SetOutputPower(0b1111); // 30dbm = 1000mW
+  //Radio.SetOutputPower(0b1000); // 23dbm = 200mW
+  // Radio.SetOutputPower(0b1100); // 27dbm = 500mW
+  // Radio.SetOutputPower(0b1111); // 30dbm = 1000mW
 #elif defined Regulatory_Domain_AU_433
-  Serial.println("Setting 433MHz Mode");
-  FHSSsetFreqMode(433);
+  Serial.println("433MHz Mode");
   Radio.RFmodule = RFMOD_SX1278;        //define radio module here
   Radio.SetFrequency(GetInitialFreq()); //set frequency first or an error will occur!!!
   Serial.println(FHSSgetNextFreq());
