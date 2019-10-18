@@ -140,8 +140,12 @@ void ICACHE_RAM_ATTR Generate4ChannelData()
   Radio.TXdataBuffer[4] = ((CRSF_to_UINT11(crsf.ChannelDataIn[3]) & 0b1111111100) >> 2);
   Radio.TXdataBuffer[5] = ((CRSF_to_UINT11(crsf.ChannelDataIn[0]) & 0b0000000011) << 6) + ((CRSF_to_UINT11(crsf.ChannelDataIn[1]) & 0b0000000011) << 4) +
                           ((CRSF_to_UINT11(crsf.ChannelDataIn[2]) & 0b0000000011) << 2) + ((CRSF_to_UINT11(crsf.ChannelDataIn[3]) & 0b0000000011) << 0);
-  Radio.TXdataBuffer[6] = 0;
-  }
+
+  Radio.TXdataBuffer[6] =  CRSF_to_BIT(crsf.ChannelDataIn[4]) << 7;
+  Radio.TXdataBuffer[6] += CRSF_to_BIT(crsf.ChannelDataIn[5]) << 6;
+  Radio.TXdataBuffer[6] += (CRSF_to_UINT11(crsf.ChannelDataIn[6]) & 0b1110000000) >> 4;
+  Radio.TXdataBuffer[6] += (CRSF_to_UINT11(crsf.ChannelDataIn[7]) & 0b1110000000) >> 7;
+}
 
 void ICACHE_RAM_ATTR GenerateSwitchChannelData()
 {
@@ -190,16 +194,16 @@ void ICACHE_RAM_ATTR SendRCdataToRF_NoTLM()
   }
   else
   {
-    if ((millis() > (SwitchPacketSendInterval + SwitchPacketLastSent)) || Channels5to8Changed)
-    {
-      Channels5to8Changed = false;
-      GenerateSwitchChannelData();
-      SwitchPacketLastSent = millis();
-    }
-    else // else we just have regular channel data which we send as 8 + 2 bits
-    {
+    // if ((millis() > (SwitchPacketSendInterval + SwitchPacketLastSent)) || Channels5to8Changed)
+    // {
+    //   Channels5to8Changed = false;
+    //   GenerateSwitchChannelData();
+    //   SwitchPacketLastSent = millis();
+    // }
+    // else // else we just have regular channel data which we send as 8 + 2 bits
+    // {
       Generate4ChannelData();
-    }
+    // }
   }
 
   ///// Next, Calculate the CRC and put it into the buffer /////

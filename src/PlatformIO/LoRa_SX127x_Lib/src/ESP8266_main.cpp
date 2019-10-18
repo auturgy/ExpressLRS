@@ -221,6 +221,12 @@ void ICACHE_RAM_ATTR ProcessRFPacket()
                 crsf.PackedRCdataOut.ch1 = UINT11_to_CRSF((Radio.RXdataBuffer[2] << 2) + (Radio.RXdataBuffer[5] & 0b00110000 >> 4));
                 crsf.PackedRCdataOut.ch2 = UINT11_to_CRSF((Radio.RXdataBuffer[3] << 2) + (Radio.RXdataBuffer[5] & 0b00001100 >> 2));
                 crsf.PackedRCdataOut.ch3 = UINT11_to_CRSF((Radio.RXdataBuffer[4] << 2) + (Radio.RXdataBuffer[5] & 0b00000011 >> 0));
+  
+                crsf.PackedRCdataOut.ch4 = BIT_to_CRSF(Radio.RXdataBuffer[6] & 0b10000000);
+                crsf.PackedRCdataOut.ch5 = BIT_to_CRSF(Radio.RXdataBuffer[6] & 0b01000000);
+                crsf.PackedRCdataOut.ch6 = SWITCH3b_to_CRSF((uint16_t)(Radio.RXdataBuffer[6] & 0b00111000) >> 3);
+                crsf.PackedRCdataOut.ch7 = SWITCH3b_to_CRSF((uint16_t)(Radio.RXdataBuffer[6] & 0b00000111) >> 0);
+
                 crsf.sendRCFrameToFC();
             }
 
