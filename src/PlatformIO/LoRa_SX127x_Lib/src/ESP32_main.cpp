@@ -352,7 +352,7 @@ void setup()
   Radio.SetFrequency(GetInitialFreq()); //set frequency first or an error will occur!!!
   // Radio.SetOutputPower(0b0000); // 15dbm = 32mW
   // Radio.SetOutputPower(0b0001); // 18dbm = 40mW
-  Radio.SetOutputPower(0b0000); // 20dbm = 100mW
+  Radio.SetOutputPower(0b0101); // 20dbm = 100mW
   //Radio.SetOutputPower(0b1000); // 23dbm = 200mW
   // Radio.SetOutputPower(0b1100); // 27dbm = 500mW
   // Radio.SetOutputPower(0b1111); // 30dbm = 1000mW
