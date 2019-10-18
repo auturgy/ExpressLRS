@@ -316,6 +316,25 @@ void setup()
   delay(3000);
   Serial.println("ExpressLRS TX Module Booted...");
 
+  // Get base mac address 
+  uint8_t baseMac[6];
+  esp_read_mac(baseMac, ESP_MAC_WIFI_STA);
+
+  // Print base mac address 
+  // This should be copied to common.h and is used to generate a unique hop sequence, DeviceAddr, and CRC.
+  // TxBaseMac[0..2] are OUI (organisationally unique identifier) and are not ESP32 unique.  Do not use!
+  Serial.println("");
+  Serial.println("Copy the below line into common.h.");
+  Serial.print("uint8_t TxBaseMac[6] = {");
+  Serial.print(baseMac[0]); Serial.print(", ");
+  Serial.print(baseMac[1]); Serial.print(", ");
+  Serial.print(baseMac[2]); Serial.print(", ");
+  Serial.print(baseMac[3]); Serial.print(", ");
+  Serial.print(baseMac[4]); Serial.print(", ");
+  Serial.print(baseMac[5]);
+  Serial.println("};");
+  Serial.println("");
+
 #ifdef Regulatory_Domain_AU_915
   Serial.println("915MHz Mode");
   Radio.RFmodule = RFMOD_SX1276;        //define radio module here
