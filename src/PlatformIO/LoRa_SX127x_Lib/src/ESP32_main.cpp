@@ -64,8 +64,6 @@ bool resync = false;
 
 bool WaitRXresponse = false;
 
-uint8_t DeviceAddr = 0b101010;
-
 void ICACHE_RAM_ATTR ProcessTLMpacket()
 {
   uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6);

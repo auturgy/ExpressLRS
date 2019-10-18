@@ -4,7 +4,9 @@
 #define Regulatory_Domain_AU_915
 #define Regulatory_Domain_AU_433 
 
-uint8_t TxBaseMac[6] = {48, 174, 164, 243, 154, 228};
+uint8_t TxBaseMac[6] = {48, 174, 164, 200, 101, 28};
+
+uint8_t DeviceAddr = TxBaseMac[3] & 0b111111;
 
 typedef enum
 {
