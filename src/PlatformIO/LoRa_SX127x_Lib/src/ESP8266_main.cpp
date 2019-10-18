@@ -126,10 +126,10 @@ void ICACHE_RAM_ATTR HandleSendTelemetryResponse()
     Radio.TXdataBuffer[4] = crsf.LinkStatistics.uplink_SNR;
     Radio.TXdataBuffer[5] = crsf.LinkStatistics.uplink_Link_quality;
 
-    uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
-    Radio.TXdataBuffer[6] = crc;
+    uint8_t crc = CalcCRC(Radio.TXdataBuffer, 7) + CRCCaesarCipher;
+    Radio.TXdataBuffer[7] = crc;
     //delayMicroseconds(5000);
-    Radio.TXnb(Radio.TXdataBuffer, 7);
+    Radio.TXnb(Radio.TXdataBuffer, 8);
     //radio hops after transmission of telemetry Packet
     //Radio.TXdoneCallback = &Radio.StartContRX;
     //Serial.println(crsf.LinkStatistics.uplink_RSSI_1);
@@ -187,8 +187,8 @@ void ICACHE_RAM_ATTR SendCRSFframe()
 void ICACHE_RAM_ATTR ProcessRFPacket()
 {
     //Serial.println(".");
-    uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
-    uint8_t inCRC = Radio.RXdataBuffer[6];
+    uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 7) + CRCCaesarCipher;
+    uint8_t inCRC = Radio.RXdataBuffer[7];
     uint8_t type = Radio.RXdataBuffer[0] & 0b11;
     uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
 
@@ -405,8 +405,8 @@ void setup()
     Radio.SetFrequency(GetInitialFreq()); //set frequency first or an error will occur!!!
 #endif
 
-    Radio.TXbuffLen = 7;
-    Radio.RXbuffLen = 7;
+    Radio.TXbuffLen = 8;
+    Radio.RXbuffLen = 8;
 
     Radio.Begin();
 

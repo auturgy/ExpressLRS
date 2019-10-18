@@ -66,8 +66,8 @@ bool WaitRXresponse = false;
 
 void ICACHE_RAM_ATTR ProcessTLMpacket()
 {
-  uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 6) + CRCCaesarCipher;
-  uint8_t inCRC = Radio.RXdataBuffer[6];
+  uint8_t calculatedCRC = CalcCRC(Radio.RXdataBuffer, 7) + CRCCaesarCipher;
+  uint8_t inCRC = Radio.RXdataBuffer[7];
   uint8_t type = Radio.RXdataBuffer[0] & 0b11;
   uint8_t packetAddr = (Radio.RXdataBuffer[0] & 0b11111100) >> 2;
   uint8_t TLMheader = Radio.RXdataBuffer[1];
@@ -126,6 +126,7 @@ void ICACHE_RAM_ATTR GenerateSyncPacketData()
   Radio.TXdataBuffer[3] = TxBaseMac[3];
   Radio.TXdataBuffer[4] = TxBaseMac[4];
   Radio.TXdataBuffer[5] = TxBaseMac[5];
+  Radio.TXdataBuffer[6] = 0;
 }
 
 void ICACHE_RAM_ATTR Generate4ChannelData()
@@ -139,7 +140,8 @@ void ICACHE_RAM_ATTR Generate4ChannelData()
   Radio.TXdataBuffer[4] = ((CRSF_to_UINT11(crsf.ChannelDataIn[3]) & 0b1111111100) >> 2);
   Radio.TXdataBuffer[5] = ((CRSF_to_UINT11(crsf.ChannelDataIn[0]) & 0b0000000011) << 6) + ((CRSF_to_UINT11(crsf.ChannelDataIn[1]) & 0b0000000011) << 4) +
                           ((CRSF_to_UINT11(crsf.ChannelDataIn[2]) & 0b0000000011) << 2) + ((CRSF_to_UINT11(crsf.ChannelDataIn[3]) & 0b0000000011) << 0);
-}
+  Radio.TXdataBuffer[6] = 0;
+  }
 
 void ICACHE_RAM_ATTR GenerateSwitchChannelData()
 {
@@ -151,7 +153,8 @@ void ICACHE_RAM_ATTR GenerateSwitchChannelData()
   Radio.TXdataBuffer[3] = Radio.TXdataBuffer[1];
   Radio.TXdataBuffer[4] = Radio.TXdataBuffer[2];
   Radio.TXdataBuffer[5] = Radio.NonceTX; //we use this free byte in switch packet to send the current nonce and sync the RX to the TX
-}
+  Radio.TXdataBuffer[6] = 0;
+  }
 
 void ICACHE_RAM_ATTR HandleFHSS()
 {
@@ -200,10 +203,10 @@ void ICACHE_RAM_ATTR SendRCdataToRF_NoTLM()
   }
 
   ///// Next, Calculate the CRC and put it into the buffer /////
-  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
-  Radio.TXdataBuffer[6] = crc;
+  uint8_t crc = CalcCRC(Radio.TXdataBuffer, 7) + CRCCaesarCipher;
+  Radio.TXdataBuffer[7] = crc;
   ////////////////////////////////////////////////////////////
-  Radio.TXnb(Radio.TXdataBuffer, 7);
+  Radio.TXnb(Radio.TXdataBuffer, 8);
   blockUpdate = false;
 }
 
@@ -366,8 +369,8 @@ void setup()
 
   Radio.HighPowerModule = true;
   Radio.TimerInterval = 10000; //in microseconds
-  Radio.TXbuffLen = 7;
-  Radio.RXbuffLen = 7;
+  Radio.TXbuffLen = 8;
+  Radio.RXbuffLen = 8;
 
   Radio.RXdoneCallback1 = &ProcessTLMpacket;
   Radio.TXdoneCallback1 = &HandleFHSS;
