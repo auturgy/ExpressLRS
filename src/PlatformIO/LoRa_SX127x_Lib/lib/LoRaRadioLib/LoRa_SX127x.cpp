@@ -563,6 +563,8 @@ void ICACHE_RAM_ATTR SX127xDriver::TXnbISR()
   TXdoneCallback1();
   TXdoneCallback2();
   TXdoneMicros = micros();
+  // Serial.print("On Air Time: ");
+  // Serial.println(TXdoneMicros - TXstartMicros);
 }
 
 uint8_t ICACHE_RAM_ATTR SX127xDriver::TXnb(const volatile uint8_t *data, uint8_t length)
@@ -570,6 +572,9 @@ uint8_t ICACHE_RAM_ATTR SX127xDriver::TXnb(const volatile uint8_t *data, uint8_t
 
   SX127xDriver::TXstartMicros = micros();
   SX127xDriver::HeadRoom = TXstartMicros - TXdoneMicros;
+  // Serial.print("HeadRoom: ");
+  // Serial.println(HeadRoom);
+
   ClearIRQFlags();
   SetMode(SX127X_STANDBY);
 
