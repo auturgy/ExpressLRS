@@ -122,9 +122,10 @@ void ICACHE_RAM_ATTR GenerateSyncPacketData()
   PacketHeaderAddr = (DeviceAddr << 2) + 0b10;
   Radio.TXdataBuffer[0] = PacketHeaderAddr;
   Radio.TXdataBuffer[1] = FHSSgetCurrIndex();
-  Radio.TXdataBuffer[2] = Radio.NonceTX;
-  Radio.TXdataBuffer[3] = ExpressLRS_currAirRate.enum_rate;
-  Radio.TXdataBuffer[4] = 0;
+  Radio.TXdataBuffer[2] = (Radio.NonceTX << 4) + (ExpressLRS_currAirRate.enum_rate & 0b1111);
+  Radio.TXdataBuffer[3] = TxBaseMac[3];
+  Radio.TXdataBuffer[4] = TxBaseMac[4];
+  Radio.TXdataBuffer[5] = TxBaseMac[5];
 }
 
 void ICACHE_RAM_ATTR Generate4ChannelData()
@@ -225,9 +226,18 @@ void BeginFastSync()
   SetRFLinkRate(RF_RATE_50HZ);
   Radio.SetFrequency(GetInitialFreq());
 
+
+  // Radio.TXdataBuffer[0] = PacketHeaderAddr;
+  // Radio.TXdataBuffer[1] = FHSSgetCurrIndex();
+  // Radio.TXdataBuffer[2] = (Radio.NonceTX << 4) + (ExpressLRS_currAirRate.enum_rate & 0b1111);
+  // Radio.TXdataBuffer[3] = TxBaseMac[3];
+  // Radio.TXdataBuffer[4] = TxBaseMac[4];
+  // Radio.TXdataBuffer[5] = TxBaseMac[5];
+
   GenerateSyncPacketData();
-  Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
-  Radio.TXdataBuffer[4] = 1;
+  // Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
+  // Radio.TXdataBuffer[4] = 1;
+  Radio.TXdataBuffer[2] = (1 << 4) + (ExpressLRS_prevAirRate.enum_rate & 0b1111);
   uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
   Radio.TXdataBuffer[6] = crc;
 
@@ -260,8 +270,9 @@ void BeginFastSync()
           LastTLMpacketRecvMillis = millis();
           GenerateSyncPacketData();
 
-          Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
-          Radio.TXdataBuffer[4] = 3;
+          // Radio.TXdataBuffer[3] = ExpressLRS_prevAirRate.enum_rate;
+          // Radio.TXdataBuffer[4] = 3;
+          Radio.TXdataBuffer[2] = (3 << 4) + (ExpressLRS_prevAirRate.enum_rate & 0b1111);
           uint8_t crc = CalcCRC(Radio.TXdataBuffer, 6) + CRCCaesarCipher;
           Radio.TXdataBuffer[6] = crc;
           Radio.TX((uint8_t *)Radio.TXdataBuffer, 7);

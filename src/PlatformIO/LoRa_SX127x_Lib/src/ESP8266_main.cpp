@@ -248,7 +248,7 @@ void ICACHE_RAM_ATTR ProcessRFPacket()
             { //telemetry packet from master
             }
 
-            if (type == 0b10)
+            if (type == 0b10 && Radio.RXdataBuffer[3] == TxBaseMac[3] && Radio.RXdataBuffer[4] == TxBaseMac[4] && Radio.RXdataBuffer[5] == TxBaseMac[5])
             { //sync packet from master
                 //Serial.println("Sync Packet");
 
@@ -266,7 +266,7 @@ void ICACHE_RAM_ATTR ProcessRFPacket()
                 //{
                 //   Serial.println(NonceRXlocal - Radio.RXdataBuffer[2]);
 
-                NonceRXlocal = Radio.RXdataBuffer[2];
+                NonceRXlocal = ((Radio.RXdataBuffer[2] & 0b11110000) >> 4);
                 // }
 
                 if (LostConnection)
@@ -286,7 +286,7 @@ void ICACHE_RAM_ATTR ProcessRFPacket()
                 //Serial.println(str);
                 //Serial.println(Radio.RXdataBuffer[1]);
 
-                if (ExpressLRS_currAirRate.enum_rate == !(expresslrs_RFrates_e)Radio.RXdataBuffer[3])
+                if (ExpressLRS_currAirRate.enum_rate == !(expresslrs_RFrates_e)(Radio.RXdataBuffer[2] & 0b00001111))
                 {
                     Serial.println("update rate");
                     switch (Radio.RXdataBuffer[3])
